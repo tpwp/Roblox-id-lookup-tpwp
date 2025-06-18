@@ -21,7 +21,6 @@ if st.button("Search") and username:
                 user_id = data['Id']
                 display_name = data.get('Username', username)
 
-                # Get creation date
                 user_info = requests.get(f"https://users.roblox.com/v1/users/{user_id}").json()
                 created = user_info.get("created")
                 if created:
@@ -43,8 +42,7 @@ if st.button("Search") and username:
                 st.markdown(f"[🔗 View Profile]({profile_link})", unsafe_allow_html=True)
 
                 st.markdown("### 📋 Copy this:")
-st.code(copy_text, language="markdown")
-
+                st.code(copy_text, language="markdown")
 
         except Exception as e:
             st.error(f"Something went wrong: {e}")
