@@ -1,64 +1,109 @@
-import streamlit as st
-import requests
-import pyperclip
-
-def get_user_data(username):
-    url = "https://users.roblox.com/v1/usernames/users"
-    data = {"usernames": [username], "excludeBannedUsers": False}
-    response = requests.post(url, json=data)
-    if response.status_code == 200:
-        users = response.json().get("data", [])
-        if users:
-            user = users[0]
-            return {
-                "username": user["name"],
-                "display_name": user.get("displayName", ""),
-                "user_id": user["id"]
-            }
-    return None
-
-st.set_page_config(page_title="Roblox ID Lookup", page_icon="🎮", layout="centered")
-
-st.markdown(
-    """
-    <style>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Roblox Username ➜ ID Lookup</title>
+  <style>
     body {
-        background-color: #0e1117;
-        color: white;
+      font-family: sans-serif;
+      background-color: #0d0d0d;
+      color: white;
+      text-align: center;
+      padding: 20px;
     }
-    .stButton > button {
-        background-color: #262730;
-        color: white;
-        border: 1px solid white;
+    input, button {
+      padding: 10px;
+      margin: 10px;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
     }
-    a {
-        color: #00aaff;
+    #copyBtn {
+      background-color: #222;
+      color: white;
+      cursor: pointer;
     }
-    </style>
-    """,
-    unsafe_allow_html=True
-)
+    .label {
+      font-weight: bold;
+      margin-top: 10px;
+    }
+    .value {
+      color: #7fff7f;
+    }
+    .link {
+      color: #4eaaff;
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <h1>🔍 Roblox Username ➜ ID Lookup</h1>
+  <input type="text" id="usernameInput" placeholder="Enter Roblox Username" />
+  <button onclick="lookupUser()">Search</button>
 
-st.title("🔍 Roblox Username → ID Lookup")
+  <div id="result" style="margin-top: 20px;"></div>
 
-username = st.text_input("Enter Roblox Username")
+  <script>
+    async function lookupUser() {
+      const username = document.getElementById("usernameInput").value.trim();
+      if (!username) return;
 
-if st.button("Search") and username:
-    user = get_user_data(username)
-    if user:
-        profile_link = f"https://www.roblox.com/users/{user['user_id']}/profile"
-        avatar_url = f"https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds={user['user_id']}&size=150x150&format=Png&isCircular=true"
+      const resultDiv = document.getElementById("result");
+      resultDiv.innerHTML = "Loading...";
 
-        st.image(avatar_url, caption=f"{user['username']}'s Avatar", width=150)
-        st.markdown(f"""
-        **🔤 Username:** `{user['username']}`  
-        **🪪 User ID:** `{user['user_id']}`  
-        **💬 Display Name:** `{user['display_name']}`  
-        **🔗 [View Profile]({profile_link})**
-        """)
+      try {
+        // Fetch ID
+        const res = await fetch("https://users.roblox.com/v1/usernames/users", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ usernames: [username], excludeBannedUsers: false })
+        });
+        const data = await res.json();
+        const user = data.data[0];
 
-        if st.button("📋 Copy Username - ID"):
-            pyperclip.copy(f"{user['username']} - {user['user_id']}")
-            st.success("Copied to clipboard!")
-    else:
-        st.error("User not found. Please check the username.")
+        if (!user) throw "User not found.";
+
+        const userId = user.id;
+
+        // Fetch profile details
+        const profileRes = await fetch(`https://users.roblox.com/v1/users/${userId}`);
+        const profile = await profileRes.json();
+
+        const createdAt = new Date(profile.created);
+        const now = new Date();
+        const daysAgo = Math.floor((now - createdAt) / (1000 * 60 * 60 * 24));
+        const createdFormatted = createdAt.toLocaleDateString("en-GB");
+
+        const avatarURL = `https://www.roblox.com/headshot-thumbnail/image?userId=${userId}&width=150&height=150&format=png`;
+        const profileLink = `https://www.roblox.com/users/${userId}/profile`;
+
+        const copyText = `${user.name} - ${userId}`;
+
+        resultDiv.innerHTML = `
+          <img src="${avatarURL}" alt="Avatar" style="border-radius: 12px;"><br>
+          <div class="label">🧑 Username: <span class="value">${user.name}</span></div>
+          <div class="label">🆔 User ID: <span class="value">${userId}</span></div>
+          <div class="label">📛 Display Name: <span class="value">${user.displayName}</span></div>
+          <div class="label">📅 Created On: <span class="value">${createdFormatted} (${daysAgo} days ago)</span></div>
+          <br><a href="${profileLink}" target="_blank" class="link">View Profile</a><br><br>
+          <button id="copyBtn" onclick="copyToClipboard('${copyText}')">📋 Copy Username - ID</button>
+        `;
+      } catch (err) {
+        resultDiv.innerHTML = `<span style="color: red;">Error: ${err}</span>`;
+      }
+    }
+
+    function copyToClipboard(text) {
+      navigator.clipboard.writeText(text).then(() => {
+        alert("Copied: " + text);
+      });
+    }
+
+    // Search on Enter key
+    document.getElementById("usernameInput").addEventListener("keydown", function(e) {
+      if (e.key === "Enter") lookupUser();
+    });
+  </script>
+</body>
+</html>
