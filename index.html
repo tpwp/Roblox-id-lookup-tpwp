@@ -87,7 +87,11 @@
           <div class="label">📛 Display Name: <span class="value">${user.displayName}</span></div>
           <div class="label">📅 Created On: <span class="value">${createdFormatted} (${daysAgo} days ago)</span></div>
           <br><a href="${profileLink}" target="_blank" class="link">View Profile</a><br><br>
-          <button id="copyBtn" onclick="copyToClipboard('${copyText}')">📋 Copy Username - ID</button>
+          <div style="margin-top: 15px;">
+  <label for="copyField">📋 Copy this:</label><br>
+  <input type="text" id="copyField" value="${copyText}" readonly style="padding:8px; width: 220px; text-align: center; font-weight: bold;"/>
+</div>
+
         `;
       } catch (err) {
         resultDiv.innerHTML = `<span style="color: red;">Error: ${err}</span>`;
