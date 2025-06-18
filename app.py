@@ -42,7 +42,9 @@ if st.button("Search") and username:
                 st.markdown(f"**📅 Joined Date:** `{created_str}`")
                 st.markdown(f"[🔗 View Profile]({profile_link})", unsafe_allow_html=True)
 
-                st.text_input("📋 Copy this:", value=copy_text, key="copyfield")
+                st.markdown("### 📋 Copy this:")
+st.code(copy_text, language="markdown")
+
 
         except Exception as e:
             st.error(f"Something went wrong: {e}")
