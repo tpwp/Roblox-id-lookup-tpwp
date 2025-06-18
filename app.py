@@ -12,8 +12,15 @@ username = st.text_input("Roblox Username")
 if st.button("Search") and username:
     with st.spinner("Fetching data..."):
         try:
-            res = requests.get(f"https://api.roblox.com/users/get-by-username?username={username}")
-            data = res.json()
+res = requests.get(f"https://users.roblox.com/v1/usernames/users", json={"usernames": [username]})
+data = res.json()
+if "data" in data and len(data["data"]) > 0:
+    user_id = data["data"][0]["id"]
+    display_name = data["data"][0]["displayName"]
+else:
+    st.error("User not found.")
+    st.stop()
+
             
             if 'Id' not in data:
                 st.error("User not found.")
