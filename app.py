@@ -29,7 +29,7 @@ if st.button("Search") and username:
                 created_raw = user_info.get("created")
                 if created_raw:
                     created_dt = datetime.fromisoformat(created_raw.replace("Z", "+00:00"))
-                    days_ago = (datetime.utcnow() - created_dt).days
+                    days_ago = (datetime.now(created_dt.tzinfo) - created_dt).days
                     created_str = created_dt.strftime("%d/%m/%Y") + f" ({days_ago} days ago)"
                 else:
                     created_str = "N/A"
