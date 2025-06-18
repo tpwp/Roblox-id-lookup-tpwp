@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Roblox Username ➜ ID Lookup</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background-color: #0d0d0d;
+      color: white;
+      text-align: center;
+      padding: 20px;
+    }
+    input, button {
+      padding: 10px;
+      margin: 10px;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+    }
+    #copyBtn {
+      background-color: #222;
+      color: white;
+      cursor: pointer;
+    }
+    .label {
+      font-weight: bold;
+      margin-top: 10px;
+    }
+    .value {
+      color: #7fff7f;
+    }
+    .link {
+      color: #4eaaff;
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <h1>🔍 Roblox Username ➜ ID Lookup</h1>
+  <input type="text" id="usernameInput" placeholder="Enter Roblox Username" />
+  <button onclick="lookupUser()">Search</button>
+
+  <div id="result" style="margin-top: 20px;"></div>
+
+  <script>
+    async function lookupUser() {
+      const username = document.getElementById("usernameInput").value.trim();
+      if (!username) return;
+
+      const resultDiv = document.getElementById("result");
+      resultDiv.innerHTML = "Loading...";
+
+      try {
+        // Fetch ID
+        const res = await fetch("https://users.roblox.com/v1/usernames/users", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ usernames: [username], excludeBannedUsers: false })
+        });
+        const data = await res.json();
+        const user = data.data[0];
+
+        if (!user) throw "User not found.";
+
+        const userId = user.id;
+
+        // Fetch profile details
+        const profileRes = await fetch(`https://users.roblox.com/v1/users/${userId}`);
+        const profile = await profileRes.json();
+
+        const createdAt = new Date(profile.created);
+        const now = new Date();
+        const daysAgo = Math.floor((now - createdAt) / (1000 * 60 * 60 * 24));
+        const createdFormatted = createdAt.toLocaleDateString("en-GB");
+
+        const avatarURL = `https://www.roblox.com/headshot-thumbnail/image?userId=${userId}&width=150&height=150&format=png`;
+        const profileLink = `https://www.roblox.com/users/${userId}/profile`;
+
+        const copyText = `${user.name} - ${userId}`;
+
+        resultDiv.innerHTML = `
+          <img src="${avatarURL}" alt="Avatar" style="border-radius: 12px;"><br>
+          <div class="label">🧑 Username: <span class="value">${user.name}</span></div>
+          <div class="label">🆔 User ID: <span class="value">${userId}</span></div>
+          <div class="label">📛 Display Name: <span class="value">${user.displayName}</span></div>
+          <div class="label">📅 Created On: <span class="value">${createdFormatted} (${daysAgo} days ago)</span></div>
+          <br><a href="${profileLink}" target="_blank" class="link">View Profile</a><br><br>
+          <button id="copyBtn" onclick="copyToClipboard('${copyText}')">📋 Copy Username - ID</button>
+        `;
+      } catch (err) {
+        resultDiv.innerHTML = `<span style="color: red;">Error: ${err}</span>`;
+      }
+    }
+
+    function copyToClipboard(text) {
+      navigator.clipboard.writeText(text).then(() => {
+        alert("Copied: " + text);
+      });
+    }
+
+    // Search on Enter key
+    document.getElementById("usernameInput").addEventListener("keydown", function(e) {
+      if (e.key === "Enter") lookupUser();
+    });
+  </script>
+</body>
+</html>
