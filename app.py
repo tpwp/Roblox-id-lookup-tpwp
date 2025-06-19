@@ -34,16 +34,18 @@ if st.button("Search") and username:
                 else:
                     created_str = "N/A"
 
-# Get new avatar headshot URL
+# Modern avatar thumbnail URL
 thumb_url = f"https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds={user_id}&size=150x150&format=Png"
 thumb_data = requests.get(thumb_url).json()
 
-# Check if avatar loaded correctly
-if thumb_data["data"] and thumb_data["data"][0]["state"] == "Completed":
-    avatar = thumb_data["data"][0]["imageUrl"]
-    st.image(avatar, caption=f"{username}'s Avatar")
+# Check for a valid image and state
+avatar_data = thumb_data.get("data", [{}])[0]
+if avatar_data.get("state") == "Completed":
+    avatar_url = avatar_data.get("imageUrl")
+    st.image(avatar_url, caption=f"{username}'s Avatar")
 else:
-    st.warning("⚠️ Avatar not available.")
+    st.warning("⚠️ Avatar not available or still processing.")
+
 
                 profile = f"https://www.roblox.com/users/{user_id}/profile"
 
