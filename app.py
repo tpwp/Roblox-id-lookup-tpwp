@@ -3,7 +3,6 @@ import requests
 from datetime import datetime
 
 st.set_page_config(page_title="Roblox Username ➜ ID", page_icon="🎮", layout="centered")
-
 st.title("🔍 Roblox Username ➜ ID Lookup")
 st.markdown("Enter a Roblox username to get user ID and account info.")
 
@@ -12,7 +11,7 @@ username = st.text_input("Roblox Username")
 if st.button("Search") and username:
     with st.spinner("Fetching info..."):
         try:
-            # Roblox official POST endpoint
+            # Roblox username lookup
             res = requests.post(
                 "https://users.roblox.com/v1/usernames/users",
                 json={"usernames": [username]}
@@ -24,7 +23,7 @@ if st.button("Search") and username:
                 user_id = user["id"]
                 display_name = user["displayName"]
 
-                # Get full account info
+                # Get account creation date
                 user_info = requests.get(f"https://users.roblox.com/v1/users/{user_id}").json()
                 created_raw = user_info.get("created")
                 if created_raw:
@@ -34,22 +33,19 @@ if st.button("Search") and username:
                 else:
                     created_str = "N/A"
 
-# Modern avatar thumbnail URL
-thumb_url = f"https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds={user_id}&size=150x150&format=Png"
-thumb_data = requests.get(thumb_url).json()
+                # Get avatar
+                thumb_url = f"https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds={user_id}&size=150x150&format=Png"
+                thumb_data = requests.get(thumb_url).json()
+                avatar_data = thumb_data.get("data", [{}])[0]
+                if avatar_data.get("state") == "Completed":
+                    avatar_url = avatar_data.get("imageUrl")
+                    st.image(avatar_url, caption=f"{username}'s Avatar")
+                else:
+                    st.warning("⚠️ Avatar not available or still processing.")
 
-# Check for a valid image and state
-avatar_data = thumb_data.get("data", [{}])[0]
-if avatar_data.get("state") == "Completed":
-    avatar_url = avatar_data.get("imageUrl")
-    st.image(avatar_url, caption=f"{username}'s Avatar")
-else:
-    st.warning("⚠️ Avatar not available or still processing.")
-
-
+                # Other info
                 profile = f"https://www.roblox.com/users/{user_id}/profile"
 
-                st.image(avatar, caption=f"{username}'s Avatar")
                 st.markdown(f"**🧑 Username:** `{username}`")
                 st.markdown(f"**🆔 User ID:** `{user_id}`")
                 st.markdown(f"**📛 Display Name:** `{display_name}`")
@@ -58,6 +54,7 @@ else:
 
                 st.markdown("### 📋 Copy this:")
                 st.code(f"{username} - {user_id}", language="markdown")
+
             else:
                 st.error("❌ User not found. Double-check the username.")
 
