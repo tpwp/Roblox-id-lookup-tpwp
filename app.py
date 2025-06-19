@@ -2,7 +2,7 @@ import streamlit as st
 import requests
 from datetime import datetime
 
-st.set_page_config(page_title="Roblox Username ➜ ID", page_icon="logo.png", layout="centered")
+st.set_page_config(page_title="ID Lookup", page_icon="logo.png", layout="centered")
 st.title("🔍 Roblox Username ➜ ID Lookup")
 st.markdown("Enter a Roblox username to get user ID and account info.")
 
