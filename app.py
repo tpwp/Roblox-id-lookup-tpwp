@@ -1,9 +1,26 @@
 import streamlit as st
 import requests
 from datetime import datetime
+
+# ---------- EASTER EGGS ----------
+EASTER_EGGS = {
+    "tpwp2012": "🚨 UNBAN TPWP! 🚨",
+    "bxn_vi": "Not tuff 🤣🤣🤣",
+    "builderman": "🗿 RESPECT THE OG",
+}
+
+# ---------- PAGE CONFIG (STATIC ONLY) ----------
+st.set_page_config(
+    page_title="Roblox ID Lookup",
+    page_icon="🤫",
+    layout="centered"
+)
+
+# ---------- COPY BUTTON ----------
 def copy_button(text):
+    escaped = text.replace("'", "\\'")
     st.markdown(f"""
-    <button onclick="navigator.clipboard.writeText('{text}')"
+    <button onclick="navigator.clipboard.writeText('{escaped}')"
     style="
         background:#3cff88;
         color:#000;
@@ -16,28 +33,6 @@ def copy_button(text):
         📋 Copy
     </button>
     """, unsafe_allow_html=True)
-EASTER_EGGS = {
-    "tpwp2012": "🚨 UNBAN TPWP! 🚨",
-    "bxn_vi": "Not tuff 🤣🤣🤣",
-    "builderman": "🗿 RESPECT THE OG",
-}
-
-
-# ---------- PAGE CONFIG ----------
-st.set_page_config(
-    display_title = EASTER_EGGS.get(
-    username.lower().strip(),
-    "🔍 Roblox Username → ID Lookup"
-)
-
-st.markdown(
-    f"<div class='main-title'>{display_title}</div>",
-    unsafe_allow_html=True
-)
-,
-    page_icon="🤫",
-    layout="centered"
-)
 
 # ---------- CUSTOM CSS ----------
 st.markdown("""
@@ -76,22 +71,25 @@ body {
     font-weight: 600;
     font-size: 1.05rem;
 }
-
-.copy-box input {
-    text-align: center;
-    font-weight: 600;
-}
 </style>
 """, unsafe_allow_html=True)
-
-# ---------- HEADER ----------
-st.markdown("<div class='main-title'> Roblox Username → ID Lookup</div>", unsafe_allow_html=True)
-st.markdown("<div class='subtext'>Fast, clean, no BS. Get Roblox user info instantly. Made with love by tpwp.</div>", unsafe_allow_html=True)
 
 # ---------- INPUT ----------
 username = st.text_input("Roblox Username", placeholder="Enter username here…")
 
 search = st.button("🔎 Search User", use_container_width=True)
+
+# ---------- DYNAMIC TITLE (EASTER EGGS) ----------
+display_title = EASTER_EGGS.get(
+    username.lower().strip() if username else "",
+    "🔍 Roblox Username → ID Lookup"
+)
+
+st.markdown(f"<div class='main-title'>{display_title}</div>", unsafe_allow_html=True)
+st.markdown(
+    "<div class='subtext'>Fast, clean, no BS. Get Roblox user info instantly. Made with love by tpwp.</div>",
+    unsafe_allow_html=True
+)
 
 # ---------- LOGIC ----------
 if search and username:
@@ -151,9 +149,8 @@ if search and username:
 
                 st.markdown("---")
 
-                st.markdown("### Username and ID:")
-                st.code(f"{username} - {user_id}", language="markdown")
-
+                st.markdown("### 📋 Copy")
+                copy_button(f"{username} - {user_id}")
 
                 st.markdown("</div>", unsafe_allow_html=True)
                 st.success("✔️ User found")
