@@ -16,11 +16,25 @@ def copy_button(text):
         📋 Copy
     </button>
     """, unsafe_allow_html=True)
+EASTER_EGGS = {
+    "tpwp2012": "🚨 UNBAN TPWP! 🚨",
+    "bxn_vi": "Not tuff 🤣🤣🤣",
+    "builderman": "🗿 RESPECT THE OG",
+}
 
 
 # ---------- PAGE CONFIG ----------
 st.set_page_config(
-    page_title="#unbanTPWP Roblox ID Lookup",
+    display_title = EASTER_EGGS.get(
+    username.lower().strip(),
+    "🔍 Roblox Username → ID Lookup"
+)
+
+st.markdown(
+    f"<div class='main-title'>{display_title}</div>",
+    unsafe_allow_html=True
+)
+,
     page_icon="🤫",
     layout="centered"
 )
