@@ -137,8 +137,8 @@ if search and username:
 
                 st.markdown("---")
 
-                st.markdown("### 📋 Copy Info")
-                copy_button(f"{username} - {user_id}")
+                st.markdown("### Username and ID:")
+                st.code(f"{username} - {user_id}", language="markdown")
 
 
                 st.markdown("</div>", unsafe_allow_html=True)
