@@ -20,8 +20,8 @@ def copy_button(text):
 
 # ---------- PAGE CONFIG ----------
 st.set_page_config(
-    page_title="Roblox ID Lookup",
-    page_icon="🔍",
+    page_title="#unbanTPWP Roblox ID Lookup",
+    page_icon="🤫",
     layout="centered"
 )
 
@@ -71,8 +71,8 @@ body {
 """, unsafe_allow_html=True)
 
 # ---------- HEADER ----------
-st.markdown("<div class='main-title'>🔍 Roblox Username → ID Lookup</div>", unsafe_allow_html=True)
-st.markdown("<div class='subtext'>Fast, clean, no BS. Get Roblox user info instantly.</div>", unsafe_allow_html=True)
+st.markdown("<div class='main-title'> Roblox Username → ID Lookup</div>", unsafe_allow_html=True)
+st.markdown("<div class='subtext'>Fast, clean, no BS. Get Roblox user info instantly. Made with love by tpwp.</div>", unsafe_allow_html=True)
 
 # ---------- INPUT ----------
 username = st.text_input("Roblox Username", placeholder="Enter username here…")
