@@ -7,6 +7,7 @@ EASTER_EGGS = {
     "tpwp2012": "🚨 UNBAN TPWP! 🚨",
     "bxn_vi": "Not tuff 🤣🤣🤣",
     "builderman": "🗿 RESPECT THE OG",
+    "Vgaiza1234": "Tuff guy ngl peak",
 }
 
 # ---------- PAGE CONFIG (STATIC ONLY) ----------
