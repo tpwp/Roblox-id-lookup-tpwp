@@ -12,7 +12,7 @@ EASTER_EGGS = {
 
 # ---------- PAGE CONFIG (STATIC ONLY) ----------
 st.set_page_config(
-    page_title="Roblox ID Lookup",
+    page_title="#UnbanTPWP / Roblox ID Lookup",
     page_icon="🤫",
     layout="centered"
 )
