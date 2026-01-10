@@ -1,6 +1,22 @@
 import streamlit as st
 import requests
 from datetime import datetime
+def copy_button(text):
+    st.markdown(f"""
+    <button onclick="navigator.clipboard.writeText('{text}')"
+    style="
+        background:#3cff88;
+        color:#000;
+        border:none;
+        padding:10px 18px;
+        border-radius:10px;
+        font-weight:700;
+        cursor:pointer;
+    ">
+        📋 Copy
+    </button>
+    """, unsafe_allow_html=True)
+
 
 # ---------- PAGE CONFIG ----------
 st.set_page_config(
@@ -121,13 +137,9 @@ if search and username:
 
                 st.markdown("---")
 
-                st.text_input(
-                    "📋 Quick Copy",
-                    f"{username} - {user_id}",
-                    disabled=True,
-                    key="copy",
-                    help="Select and copy"
-                )
+                st.markdown("### 📋 Copy Info")
+                copy_button(f"{username} - {user_id}")
+
 
                 st.markdown("</div>", unsafe_allow_html=True)
                 st.success("✔️ User found")
