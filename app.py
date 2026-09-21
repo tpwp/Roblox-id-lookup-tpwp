@@ -17,16 +17,7 @@ st.set_page_config(
     layout="centered"
 )
 
-# ---------- PASSWORD PROTECTION ----------
-# IMPORTANT:
-# Do NOT put the password directly in this file.
-# Set it as a Streamlit secret named APP_PASSWORD.
-#
-# Streamlit Cloud:
-# App -> Settings -> Secrets
-#
-# Add:
-# APP_PASSWORD = "AussieIsGay"
+
 
 def password_gate():
     if st.session_state.get("authenticated", False):
